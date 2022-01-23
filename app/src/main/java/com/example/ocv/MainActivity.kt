@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
     private val REQUEST_IMAGE_CAPTURE = 2
 
-    // 카메라 원본이미지 Uri를 저장할 변
+    // 카메라 원본이미지 Uri를 저장할 변수
     var imageUri: Uri? = null
 
     lateinit var tess : TessBaseAPI //Tesseract API 객체 생성
@@ -165,11 +165,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (biggestContour == null) {
-            throw IllegalArgumentException("No Contour")
+            AppData.showToast(this, "외곽선이 없습니다.")
+            return
         }
         // 너무 작아도 안됨
         if (biggestContourArea < 400) {
-            throw IllegalArgumentException("too small")
+            AppData.showToast(this, "사각형이 너무 작습니다.")
+            return
         }
 
         // 근사화 작업(도형의 꼭지점을 분명하게 함)
@@ -185,13 +187,13 @@ class MainActivity : AppCompatActivity() {
         // 사각형 판별
         if (approxCandidate.rows() != 4) {
             AppData.showToast(this, "사각형이 아닙니다.")
-            finish()
+            return
         }
 
         // 컨벡스(볼록한 도형)인지 판별
         if (!Imgproc.isContourConvex(MatOfPoint(*approxCandidate.toArray()))) {
             AppData.showToast(this, "컨벡스가 아닙니다.")
-            finish()
+            return
         }
 
         // 좌상단부터 시계 반대 방향으로 정점을 정렬한다.
