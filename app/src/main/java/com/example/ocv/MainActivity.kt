@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private val REQUEST_IMAGE_CAPTURE = 2
+    private val GALLERY = 1
 
     // 카메라 원본이미지 Uri를 저장할 변수
     var imageUri: Uri? = null
@@ -86,6 +87,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        binding.galleryButton.setOnClickListener {
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = "image/*"
+            startActivityForResult(intent, GALLERY)
+        }
+
+
         binding.convertButton.setOnClickListener {
             binding.progressBar.visibility = View.VISIBLE
             imageMat = Mat()
@@ -102,14 +110,26 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if( resultCode == Activity.RESULT_OK) {
-            if( requestCode == REQUEST_IMAGE_CAPTURE)
-            {
+        if(resultCode == Activity.RESULT_OK) {
+            if(requestCode == REQUEST_IMAGE_CAPTURE) {
                 if (imageUri != null) {
                     imageBitmap = loadBitmapFromMediaStore(imageUri!!)?.copy(Bitmap.Config.ARGB_8888, true)!!
 
                     binding.ocrImageOutput.setImageBitmap(imageBitmap)
                     imageUri = null
+                }
+
+            } else if(requestCode == GALLERY) {
+                imageUri = data?.data
+
+                AppData.debug(TAG, "여기 : $imageUri ")
+                try {
+                    imageBitmap = loadBitmapFromMediaStore(imageUri!!)?.copy(Bitmap.Config.ARGB_8888, true)!!
+
+                    binding.ocrImageOutput.setImageBitmap(imageBitmap)
+                    imageUri = null
+                } catch(e: Exception) {
+                    AppData.error(TAG, "gallery error : $e ")
                 }
             }
         }

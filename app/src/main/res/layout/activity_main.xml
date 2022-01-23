@@ -46,7 +46,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="사진 찍기" />
+        android:text="사진찍기" />
+
+    <Button
+        android:id="@+id/galleryButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="불러오기" />
 
     <Button
         android:id="@+id/convertButton"
