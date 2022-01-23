@@ -122,7 +122,6 @@ class MainActivity : AppCompatActivity() {
             } else if(requestCode == GALLERY) {
                 imageUri = data?.data
 
-                AppData.debug(TAG, "여기 : $imageUri ")
                 try {
                     imageBitmap = loadBitmapFromMediaStore(imageUri!!)?.copy(Bitmap.Config.ARGB_8888, true)!!
 
