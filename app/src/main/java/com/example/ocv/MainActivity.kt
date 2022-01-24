@@ -108,7 +108,8 @@ class MainActivity : AppCompatActivity() {
                 Utils.bitmapToMat(imageBitmap, imageMat)
                 convertBinaryFile(imageMat)
             } catch (e: Exception) {
-                AppData.error(TAG, "scan error : $e")
+                e.printStackTrace()
+                AppData.error(TAG, "scan error : ${e.message}")
                 AppData.showToast(this, "스캔에 실패했습니다")
             }
         }
