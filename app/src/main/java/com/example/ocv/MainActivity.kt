@@ -100,11 +100,11 @@ class MainActivity : AppCompatActivity() {
             try {
 
                 imageMat = Mat()
-
                 Utils.bitmapToMat(imageBitmap, imageMat)
                 convertBinaryFile(imageMat)
             } catch (e: Exception) {
                 AppData.error(TAG, "scan error : $e")
+                AppData.showToast(this, "스캔에 실패했습니다")
             }
 
             binding.progressBar.visibility = View.GONE
@@ -160,6 +160,8 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.N)
     fun convertBinaryFile(imageMat: Mat) {
 
+        AppData.debug(TAG, "convertBinaryFile() called")
+
         // 흑백영상으로 전환
         val graySrc = Mat()
         Imgproc.cvtColor(imageMat, graySrc, Imgproc.COLOR_BGR2GRAY)
@@ -167,6 +169,8 @@ class MainActivity : AppCompatActivity() {
         // 이진화
         val binarySrc = Mat()
         Imgproc.threshold(graySrc, binarySrc, 0.0, 255.0, Imgproc.THRESH_OTSU)
+
+        AppData.debug(TAG, "binarySrc called")
 
         // 윤곽선 찾기
         val contours = ArrayList<MatOfPoint>()
@@ -179,6 +183,8 @@ class MainActivity : AppCompatActivity() {
             Imgproc.CHAIN_APPROX_NONE
         )
 
+        AppData.debug(TAG, "findContours called")
+
         // 가장 면적이 큰 윤곽선 찾기
         var biggestContour: MatOfPoint? = null
         var biggestContourArea: Double = 0.0
@@ -190,12 +196,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        AppData.debug(TAG, "findBiggestContours called")
+
         if (biggestContour == null) {
+            AppData.error(TAG, "no Contour")
             AppData.showToast(this, "외곽선이 없습니다.")
             return
         }
         // 너무 작아도 안됨
         if (biggestContourArea < 400) {
+            AppData.error(TAG, "rectangle is too small.")
             AppData.showToast(this, "사각형이 너무 작습니다.")
             return
         }
@@ -210,14 +220,20 @@ class MainActivity : AppCompatActivity() {
             true
         )
 
+        AppData.debug(TAG, "approxPolyDP called")
+
         // 사각형 판별
         if (approxCandidate.rows() != 4) {
+
+            AppData.error(TAG, "It's not rectangle")
             AppData.showToast(this, "사각형이 아닙니다.")
             return
         }
 
         // 컨벡스(볼록한 도형)인지 판별
         if (!Imgproc.isContourConvex(MatOfPoint(*approxCandidate.toArray()))) {
+
+            AppData.error(TAG, "!Imgproc.isContourConvex(MatOfPoint(*approxCandidate.toArray")
             AppData.showToast(this, "컨벡스가 아닙니다.")
             return
         }
@@ -242,6 +258,9 @@ class MainActivity : AppCompatActivity() {
             points[2] = points[3]
             points[3] = temp
         }
+
+        AppData.debug(TAG, "sortByX called")
+
         // 원본 영상 내 정점들
         val srcQuad = MatOfPoint2f().apply { fromList(points) }
 
@@ -259,16 +278,20 @@ class MainActivity : AppCompatActivity() {
             Point(dw, dh),
             Point(dw, 0.0)
         )
+
         // 투시변환 매트릭스 구하기
         val perspectiveTransform = Imgproc.getPerspectiveTransform(srcQuad, dstQuad)
+
+        AppData.debug(TAG, "getPerspectiveTransform called")
 
         // 투시변환 된 결과 영상 얻기
         val dst = Mat()
         Imgproc.warpPerspective(imageMat, dst, perspectiveTransform, Size(dw, dh))
 
+        AppData.debug(TAG, "warpPerspective called")
+
         val bitmap = Bitmap.createBitmap(dst.cols(), dst.rows(), Bitmap.Config.ARGB_8888)
         Utils.matToBitmap(dst, bitmap)
-
 
         binding.ocrImageOutput.setImageBitmap(bitmap)
 
@@ -277,17 +300,18 @@ class MainActivity : AppCompatActivity() {
         checkFile(File("${dataPath}tessdata/"),"kor") //사용할 언어파일의 이름 지정
         checkFile(File("${dataPath}tessdata/"),"eng")
 
-        var lang : String = "kor+eng"
+        var lang = "kor+eng"
         tess = TessBaseAPI() //api준비
         tess.init(dataPath,lang) //해당 사용할 언어데이터로 초기화
 
-        processImage(dst) //이미지 가공후 텍스트뷰에 띄우기
+        AppData.debug(TAG, "TessBaseApiInit called")
 
+        processImage(dst) //이미지 가공후 텍스트뷰에 띄우기
     }
 
     fun processImage(imageMat : Mat){
 
-
+        AppData.debug(TAG, "processImage() called")
         AppData.showToast(this, "잠시 기다려 주세요")
         var ocrResult : String? = null
 
@@ -299,9 +323,10 @@ class MainActivity : AppCompatActivity() {
 
         tess.setImage(bitmap)
         ocrResult = tess.utF8Text
-        AppData.debug(TAG, "해독 결과 : $ocrResult")
+        AppData.debug(TAG, "scan result : $ocrResult")
         binding.ocrOutput.text = ""
         binding.ocrOutput.text = ocrResult
+        binding.ocrOutput.scrollY = 0
     }
 
     fun checkFile(dir : File, lang : String){

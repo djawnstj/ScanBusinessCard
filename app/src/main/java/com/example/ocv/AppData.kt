@@ -15,7 +15,7 @@ class AppData {
         var dateFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.KOREAN)
 
         fun showToast(context: Context, message: String) {
-            Toast.makeText(context, message, Toast.LENGTH_SHORT)
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
 
         fun debug(tag: String, msg: String) {
