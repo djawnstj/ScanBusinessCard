@@ -96,10 +96,17 @@ class MainActivity : AppCompatActivity() {
 
         binding.convertButton.setOnClickListener {
             binding.progressBar.visibility = View.VISIBLE
-            imageMat = Mat()
 
-            Utils.bitmapToMat(imageBitmap, imageMat)
-            convertBinaryFile(imageMat)
+            try {
+
+                imageMat = Mat()
+
+                Utils.bitmapToMat(imageBitmap, imageMat)
+                convertBinaryFile(imageMat)
+            } catch (e: Exception) {
+                AppData.error(TAG, "scan error : $e")
+            }
+
             binding.progressBar.visibility = View.GONE
         }
 
