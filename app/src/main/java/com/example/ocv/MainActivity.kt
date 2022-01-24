@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
@@ -58,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         // 권한 받기
         initPermissions()
         //버튼 초기화
-        initButtons()
+        initViews()
     }
 
     override fun onResume() {
@@ -76,8 +77,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun initButtons() {
+    fun initViews() {
 
+        // 텍스트뷰 스크롤 기능 추가
+        binding.ocrOutput.movementMethod = ScrollingMovementMethod()
+
+        // 사진찍기 버튼 클릭 리스너
         binding.cameraButton.setOnClickListener {
             if(checkPermission()) {
                 showCamera()
@@ -87,15 +92,15 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // 갤러리 벝튼 클릭 리스너
         binding.galleryButton.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
             startActivityForResult(intent, GALLERY)
         }
 
-
+        // 스캔하기 버튼 클릭 리스너
         binding.convertButton.setOnClickListener {
-            binding.progressBar.visibility = View.VISIBLE
 
             try {
 
@@ -106,8 +111,6 @@ class MainActivity : AppCompatActivity() {
                 AppData.error(TAG, "scan error : $e")
                 AppData.showToast(this, "스캔에 실패했습니다")
             }
-
-            binding.progressBar.visibility = View.GONE
         }
 
     }
@@ -160,6 +163,7 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.N)
     fun convertBinaryFile(imageMat: Mat) {
 
+        binding.progressBarLayout.visibility = View.VISIBLE
         AppData.debug(TAG, "convertBinaryFile() called")
 
         // 흑백영상으로 전환
@@ -201,12 +205,16 @@ class MainActivity : AppCompatActivity() {
         if (biggestContour == null) {
             AppData.error(TAG, "no Contour")
             AppData.showToast(this, "외곽선이 없습니다.")
+
+            binding.progressBarLayout.visibility = View.GONE
             return
         }
         // 너무 작아도 안됨
         if (biggestContourArea < 400) {
             AppData.error(TAG, "rectangle is too small.")
             AppData.showToast(this, "사각형이 너무 작습니다.")
+
+            binding.progressBarLayout.visibility = View.GONE
             return
         }
 
@@ -227,6 +235,8 @@ class MainActivity : AppCompatActivity() {
 
             AppData.error(TAG, "It's not rectangle")
             AppData.showToast(this, "사각형이 아닙니다.")
+
+            binding.progressBarLayout.visibility = View.GONE
             return
         }
 
@@ -235,6 +245,8 @@ class MainActivity : AppCompatActivity() {
 
             AppData.error(TAG, "!Imgproc.isContourConvex(MatOfPoint(*approxCandidate.toArray")
             AppData.showToast(this, "컨벡스가 아닙니다.")
+
+            binding.progressBarLayout.visibility = View.GONE
             return
         }
 
@@ -327,6 +339,8 @@ class MainActivity : AppCompatActivity() {
         binding.ocrOutput.text = ""
         binding.ocrOutput.text = ocrResult
         binding.ocrOutput.scrollY = 0
+
+        binding.progressBarLayout.visibility = View.GONE
     }
 
     fun checkFile(dir : File, lang : String){

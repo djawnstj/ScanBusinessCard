@@ -19,9 +19,7 @@
         android:layout_weight="1"
         android:singleLine="false"
         android:text="변환 글자가 나오는 텍스트"
-        android:scrollbarFadeDuration = "0"
-        android:scrollbarAlwaysDrawVerticalTrack = "true"
-        android:scrollbarStyle="outsideInset"
+        android:scrollbars="vertical"
         android:textColor="@color/baseFontColor"/>
 
     <ImageView
@@ -30,7 +28,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:adjustViewBounds="true"
-        android:scaleType="centerInside"/>
+        android:scaleType="centerInside" />
 
   </LinearLayout>
 
@@ -62,11 +60,18 @@
         android:text="스캔하기"/>
   </LinearLayout>
 
-  <ProgressBar
-      android:id="@+id/progressBar"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_centerInParent="true"
-      android:visibility="gone"/>
+  <FrameLayout
+      android:id="@+id/progressBarLayout"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/black_40"
+      android:visibility="gone" >
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
+  </FrameLayout>
 
 </RelativeLayout>
