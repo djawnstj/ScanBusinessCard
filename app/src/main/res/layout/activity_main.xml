@@ -7,71 +7,32 @@
     tools:context=".MainActivity">
 
   <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_above="@id/buttonsLayout"
-      android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/ocrOutput"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:singleLine="false"
-        android:text="변환 글자가 나오는 텍스트"
-        android:scrollbars="vertical"
-        android:textColor="@color/baseFontColor"/>
-
-    <ImageView
-        android:id="@+id/ocrImageOutput"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:adjustViewBounds="true"
-        android:scaleType="centerInside" />
-
-  </LinearLayout>
-
-  <LinearLayout
       android:id="@+id/buttonsLayout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_alignParentBottom="true" >
+      android:layout_alignParentTop="true" >
 
     <Button
-        android:id="@+id/cameraButton"
+        android:id="@+id/cardOCRButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="사진찍기" />
+        android:text="명함 구하기" />
 
     <Button
-        android:id="@+id/galleryButton"
+        android:id="@+id/findObjButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="불러오기" />
+        android:text="객체 찾기" />
 
-    <Button
-        android:id="@+id/convertButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="스캔하기"/>
   </LinearLayout>
 
   <FrameLayout
-      android:id="@+id/progressBarLayout"
+      android:id="@+id/fragmentContainer"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@color/black_40"
-      android:visibility="gone" >
-
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center" />
-
-  </FrameLayout>
+      android:layout_below="@id/buttonsLayout"
+      android:orientation="vertical" />
 
 </RelativeLayout>

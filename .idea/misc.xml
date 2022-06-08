@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/JUNSEO/AndroidStudioProjects/MyOpenCV/app/src/main/res/layout/activity_main.xml" value="0.1875" />
+        <entry key="..\:/Users/JUNSEO/AndroidStudioProjects/MyOpenCV/app/src/main/res/layout/fragment_card_o_c_r.xml" value="0.16927083333333334" />
+        <entry key="..\:/Users/JUNSEO/AndroidStudioProjects/MyOpenCV/app/src/main/res/layout/fragment_match_ocr.xml" value="0.16927083333333334" />
         <entry key="..\:/Users/JUNSEO/AndroidStudioProjects/MyOpenCV/app/src/main/res/xml/file_paths.xml" value="0.21240942028985507" />
       </map>
     </option>
